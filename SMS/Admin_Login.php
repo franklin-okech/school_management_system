@@ -8,15 +8,38 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">
         <title>Log in</title>
-        <link rel="stylesheet" href="css/style.css">
+<!--        <link rel="stylesheet" href="css/style.css">-->
     </head>
     <body>
+        <?php
+        session_start();
+        require_once 'dbConnect.php';
+        if(isset($_POST['btnSubmit'])){
+            $txtUsername=  mysql_escape_string($_POST['txtUsername']);
+            $txtPasswd= mysql_escape_string(md5($_POST['txtPasswd']));
+            if(!empty($txtUsername) && !empty($txtPasswd)){
+                $query="SELECT Id FROM admin_account WHERE Username='".$txtUsername."' AND Password='".$txtPasswd."'";
+                $query_run=  mysql_query($query);
+                $query_num_row=  mysql_num_rows($query_run);
+                if($query_num_row==1){
+                    echo  'success';
+                    $_SESSION['User']=$txtUsername;
+                    echo 'You are loged as  '.$_SESSION['User'];
+                }else{
+                    echo 'Wrong username or password';
+                }
+                
+            }  else {
+                echo 'all fields required';
+            }
+        }
         
+        ?>
         <div class="wrapper">
 	<div class="container">
-		<h1>Welcome to FDM School Managers</h1>
 		
-                <form class="form" action="defaultlogin.php" method="POST">
+		
+            <form class="form" action="Login_admin.php" method="POST">
                     <input type="text" placeholder="Username" name="txtUsername" id="Uname" required="required">
                     <input type="password" placeholder="Password" name="txtPasswd" id="Passwd" required="required">
                     <button type="submit" id="login-button" name="btnSubmit">Login</button>
